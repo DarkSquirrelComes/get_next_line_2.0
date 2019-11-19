@@ -5,9 +5,9 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
-//#include "libft/libft.h"
-
-static size_t	ft_strlen(const char *str)
+#include "libft/libft.h"
+/*
+static size_t	strlen(const char *str)
 {
 	size_t		res;
 
@@ -17,7 +17,7 @@ static size_t	ft_strlen(const char *str)
 	return (res);
 }
 
-static char		*ft_strcpy(char *dest, const char *src)
+static char		*strcpy(char *dest, const char *src)
 {
 	int	i;
 
@@ -30,8 +30,8 @@ static char		*ft_strcpy(char *dest, const char *src)
 	dest[i] = src[i];
 	return (dest);
 }
-
-char			*ft_strjoin(char const *s1, char const *s2)
+*/
+char			*strjoin(char const *s1, char const *s2)
 {
 	size_t	l1;
 	size_t	l2;
@@ -39,12 +39,12 @@ char			*ft_strjoin(char const *s1, char const *s2)
 
 	if (s1 == 0 || s2 == 0)
 		return (0);
-	l1 = ft_strlen(s1);
-	l2 = ft_strlen(s2);
+	l1 = strlen(s1);
+	l2 = strlen(s2);
 	if (!(dest = malloc((l1 + l2 + 1) * sizeof(char))))
 		return (0);
-	ft_strcpy(dest, s1);
-	ft_strcpy(dest + l1, s2);
+	strcpy(dest, s1);
+	strcpy(dest + l1, s2);
 	dest[l1 + l2] = 0;
 	return (dest);
 }
@@ -64,7 +64,7 @@ void			concat(char **overhead, char *buf, int *status)
 {
 	char 		*new_oh;
 
-	new_oh = ft_strjoin(*overhead, buf);
+	new_oh = strjoin(*overhead, buf);
     free(buf);
     free(*overhead);
 	if (!(new_oh))
@@ -88,12 +88,12 @@ void			extend_overhead(char **overhead, int fd, int *status)
     }
     if ((len = read(fd, (void *)buf, BUFF_SIZE)))
     {
-        if (errno != 0)
+        /*if (errno != 0) //cant reach
         {
             free(buf);
             *status = -1;
-        }
-        buf[len] = 0;
+        }*/
+        buf[len] = '\0';
     }
     else
         *status = 0;
@@ -125,15 +125,16 @@ void			str_no_endl(char **overhead, char **line)
 {
 	*line = strdup(*overhead);
 	free(*overhead);
-	*overhead = 0;
+	*overhead = NULL; //should be empty
 }
 
 int				get_next_line(const int fd, char **line)
 {
-	static char	*overhead = 0;
+	static char	*overhead = NULL; //NULL
 	int			status;
 
 	status = 1;
+	//ft_strnew()
 	if (overhead == 0)
 	{
 		if (!(overhead = malloc(1)))
@@ -143,13 +144,14 @@ int				get_next_line(const int fd, char **line)
 	}
 	if (strchr(overhead, '\n'))
 	{
+		//return process
 		status = process_overhead(&overhead, line);
 		return status;
 	}
 	extend_overhead(&overhead, fd, &status);
-	if (status == 0 && ft_strlen(overhead) != 0)
+	if (status == 0 && strlen(overhead) != 0)
 	{
-		str_no_endl(&overhead, line);
+		str_no_endl(&overhead, line); //status
 		return (1);
 	}
 	if (status == -1 || status == 0)

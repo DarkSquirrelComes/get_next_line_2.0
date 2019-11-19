@@ -1,5 +1,8 @@
 #include "get_next_line.h"
+#include <string.h>
+#include "libft/libft.h"
 #include <stdio.h>
+#include <errno.h> 
 
 int main()
 {
@@ -35,9 +38,30 @@ int main()
 	int 		fd;
 	int			res;
 	char		*line;
+	char		*answer;
+
+	printf("errno:%d\n", errno);
+
+	answer = "oiuytrew";
+
+	fd = open("./foo.txt", O_WRONLY);
+	write(fd, "oiuytrew\n", 9);
+	close(fd);
 
 	fd = open("./foo.txt", O_RDONLY);
-	res = get_next_line(fd, &line);
+	get_next_line(fd, &line);
+	printf("line: \"%s\"\n", line);
+	printf("answ: \"%s\"\n", answer);
+	if (strcmp(line, answer) == 0)
+		printf("strcmp success\n");
+	else
+		printf("strcmp fail\n");
+
+	if (strlen(line) != strlen(answer))
+		printf("strlen fail\n");
+	else
+		printf("strlen success\n");
+	/*res = get_next_line(fd, &line);
 	printf("FINAL BOSS1!!! RES:%d; LINE:%s;\n", res, line);
 	res = get_next_line(fd, &line);
 	printf("FINAL BOSS2!!! RES:%d; LINE:%s;\n", res, line);
@@ -45,7 +69,7 @@ int main()
 	printf("FINAL BOSS3!!! RES:%d; LINE:%s;\n", res, line);
 	res = get_next_line(fd, &line);
 	printf("FINAL BOSS4!!! RES:%d; LINE:%s;\n", res, line);
-
+*/
 	//get_next_line(fd, &line);
 	//printf("FINAL BOSS2!!! LINE:%s\n", line);
 	/*printf("BEFORE overhead: %s; status: %d;\n", overhead, status);
